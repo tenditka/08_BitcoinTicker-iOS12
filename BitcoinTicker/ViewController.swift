@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
 
     
     let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
     let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    let currencySymbolArray = ["$", "R$", "$", "¥", "€", "£", "$", "Rp", "₪", "₹", "¥", "$", "kr", "$", "zł", "lei", "₽", "kr", "$", "$", "R"]
+    var currencySelected = ""
     var finalURL = ""
 
     //Pre-setup IBOutlets
@@ -45,7 +49,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         finalURL = baseURL + currencyArray[row]
-        print(finalURL)
+        currencySelected = currencySymbolArray[row]
+        getCurrencyData(url: finalURL)
+
     }
     
 
@@ -82,20 +88,16 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
 //    //MARK: - JSON Parsing
 //    /***************************************************************/
 //    
-//    func updateWeatherData(json : JSON) {
-//        
-//        if let tempResult = json["main"]["temp"].double {
-//        
-//        weatherData.temperature = Int(round(tempResult!) - 273.15)
-//        weatherData.city = json["name"].stringValue
-//        weatherData.condition = json["weather"][0]["id"].intValue
-//        weatherData.weatherIconName =    weatherData.updateWeatherIcon(condition: weatherData.condition)
-//        }
-//        
-//        updateUIWithWeatherData()
-//    }
-//    
-
+    func updateCurrencyData(json : JSON) {
+        
+        if let currencyResult = json["ask"].double {
+            bitcoinPriceLabel.text = currencySelected + "\(currencyResult)"
+        }
+        else {
+            bitcoinPriceLabel.text = "Currency Unavailable"
+        }
+    }
+//
 
 
 
